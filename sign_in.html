@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        div{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+        }
+
+        form{
+            /* border: 1px solid red; */
+            width: 30%;
+            padding: 0 1rem;
+            background-color: cadetblue;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        form input{
+            width: 100%;
+            margin: 0.5rem;
+            padding: 0.4rem;
+            font-size: 1rem;
+            border-radius: 0.5rem;
+            outline: none;
+            border: none;
+        }
+
+        form input[type = submit]{
+            margin-bottom: 1rem;
+        }
+
+        h3{
+            font-size: 2rem;
+            line-height: 3rem;
+        }
+
+        hr{
+            margin-bottom: 0.5rem;
+        }
+
+        form p{
+            color: red;
+            text-transform: capitalize;
+            font-size: 1rem;
+            visibility: hidden;
+        }
+
+        form p::before{
+            content: "*";
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <form action="" onsubmit="login(event)" id="login">
+
+            <h3>Login</h3>
+
+            <hr>
+
+            <p id="error">error</p>
+
+            <input type="text" id="login_username" placeholder="Username">
+            
+            <input type="password" id="login_password" placeholder="Password">
+
+            <input type="submit" value="Login">
+    </form>
+    </div>
+</body>
+</html>
+
+<script>
+    function login(e){
+        e.preventDefault();
+
+        let form = document.getElementById("login");
+
+        let login_data = {
+            username: form.login_username.value,
+
+            password: form.login_password.value
+        }
+
+        login_data = JSON.stringify(login_data);
+
+        // console.log(login_data);
+
+        fetch("https://masai-api-mocker.herokuapp.com/auth/login", {
+
+            method: "POST",
+
+            body: login_data,
+
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        .then((res)=>{
+            return res.json();
+        })
+        .then((res)=>{
+            // console.log(res);
+
+            fetchmyData(form.login_username.value, res.token);
+
+            // throw res;
+        })
+        .catch((error)=>{
+            console.log(error);
+            // break;
+        })
+    }
+
+
+    function fetchmyData(username,token){
+        
+        fetch(`https://masai-api-mocker.herokuapp.com/user/${username}`,{
+
+            headers:{
+                "Content-Type": "application/json",
+
+                Authorization: `Bearer ${token}`,
+            }
+        })
+        .then((res)=>{
+            return res.json();
+        })
+        .then((res)=>{
+            console.log(res);
+
+            if(res.message == undefined){
+                alert("Login Successfull");
+
+                window.location.href = "index.html";
+            }
+            else{
+                alert("Wrong Login Credentials");
+
+                // break;
+            }
+
+            // userLocalstorage(res);
+            
+        })
+        .catch((err)=>{
+            console.log(err);
+        })
+    }
+</script>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Odering App</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div id="logo">
+                <img src="https://res.cloudinary.com/simplotel/image/upload/x_0,y_0,w_200,h_127,r_0,c_crop,q_90/icon-hotels/Logo_of_Icon_Hotels_l8oidh" alt="logo">
+            </div>
+
+            <div id="menu">
+                <ul>
+                    <li onclick="dataFetch()"><a href="#">Menu</a></li>
+                    <li><a href="./sign_in.html">Sign-In</a></li>
+                    <li><a href="./create_account.html">Sign-Up</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main id="container"></main>
+</body>
+</html>
+<script>
+    function dataFetch(){
+
+        document.getElementById("container").innerHTML = null;
+
+        let alpa = ["a", "b", "c", "d", "e", "f","g","h"];
+
+        let end = alpa.length - 1;
+
+        let letter = alpa[Math.round(Math.random()*end)];
+
+        // console.log(letter);
+
+        fetch(`https://www.themealdb.com/api/json/v1/1/search.php?f=${letter}`)
+        .then((res)=>{
+            return res.json();
+        })
+        .then((res)=>{
+            // console.log(res.meals);
+
+            show(res.meals);
+        })
+        .catch((error)=>{
+            console.log(error);
+        })
+    }
+
+
+
+    function show(items){
+
+        let container = document.getElementById("container");
+
+        items.forEach((item)=>{
+
+            let card_div = document.createElement("div");
+
+            card_div.setAttribute("class", "item_card");
+
+
+
+            let img_div = document.createElement("div");
+
+            img_div.setAttribute("class", "img_container");
+
+            let img = document.createElement("img");
+
+            img.src = item.strMealThumb;
+
+            img_div.append(img);
+
+
+
+            let text_container = document.createElement("div");
+
+            text_container.setAttribute("class", "text_container");
+
+            let name = document.createElement("p");
+
+            name.innerText = item.strMeal;
+
+            
+
+            let btn = document.createElement("button");
+
+            btn.textContent = "Add to cart";
+
+
+            text_container.append(name, btn);
+
+
+            card_div.append(img_div, text_container);
+
+
+            container.append(card_div);
+        })
+    }
+</script>

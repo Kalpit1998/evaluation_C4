@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        div{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+        }
+
+        form{
+            /* border: 1px solid red; */
+            width: 30%;
+            padding: 0 1rem;
+            background-color: cadetblue;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        form input{
+            width: 100%;
+            margin: 0.5rem;
+            padding: 0.4rem;
+            font-size: 1rem;
+            border-radius: 0.5rem;
+            outline: none;
+            border: none;
+        }
+
+        form input[type = submit]{
+            margin-bottom: 1rem;
+        }
+
+        h3{
+            font-size: 2rem;
+            line-height: 3rem;
+        }
+
+        hr{
+            margin-bottom: 0.5rem;
+        }
+
+        form p{
+            color: red;
+            text-transform: capitalize;
+            font-size: 1rem;
+            visibility: hidden;
+        }
+
+        form p::before{
+            content: "*";
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <form action="" onsubmit="create(event)" id="create_account">
+
+            <h3>Create Account</h3>
+
+            <hr>
+
+            <p id="error">error</p>
+
+            <input type="text" placeholder="Name" id="name">
+
+            <input type="email" id="email" placeholder="Email">
+
+            <input type="password" id="password" placeholder="Password">
+
+            <input type="text" id="username" placeholder="Username">
+
+            <input type="tel" id="mobile" placeholder="Mobile Number">
+
+            <input type="text" id="description" placeholder="Description">
+
+            <input type="submit" value="Create Account">
+    </form>
+    </div>
+    
+</body>
+</html>
+
+<script>
+    function create(e){
+        e.preventDefault();
+
+        let form = document.getElementById("create_account");
+
+        let user_data = {
+            name: form.name.value,
+            email: form.email.value,
+            password: form.password.value,
+            username: form.username.value,
+            mobile: form.mobile.value,
+            description:form.description.value
+        }
+
+        user_data = JSON.stringify(user_data);
+
+        // console.log(user_data)
+
+        fetch("https://masai-api-mocker.herokuapp.com/auth/register", {
+
+            method: "POST",
+
+            body: user_data,
+
+            headers: {
+                'content-type': 'application/json'
+            },
+        })
+        .then((res)=>{
+            return res.json();
+        })
+        .then((res)=>{
+            alert(res.message);
+
+            if(res.message == "Registration Success"){
+                window.location.href = "sign_in.html";
+            }
+            throw res;
+        })
+        .catch((error)=>{
+            console.log(error);
+
+            // let err = document.getElementById("error")
+
+            // err.style.visibility = "visible";
+
+            // err.innerText = error;
+        })
+    }
+</script>
